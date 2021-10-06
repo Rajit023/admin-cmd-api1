@@ -15,7 +15,7 @@ const schema =Joi.object ({
     gender:Joi.string().max(6),
 });
 const value = schema.validate(req.body);
-console.log(value)
+
 
 if(value.error){
     return res.json({

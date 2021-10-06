@@ -4,6 +4,7 @@ const Router = express.Router();
 
 import {creatUser} from '../models/user-model/User.model.js'
 import {createAdminUserValidation} from '../middlewares/formValidation.middleware.js'
+import {hashpassword} from '../helpers/bcrypt.helper.js'
 
 Router.all ("/",(req,res,next) => {
     console.log("from user router");
@@ -12,10 +13,19 @@ Router.all ("/",(req,res,next) => {
 });
 
 Router.post("/", createAdminUserValidation, async (req, res) => {
+    console.log(req.body);
     try{
         //TODO
-        //server side validation
+        
         //encrypt password
+        const hashpass = hashpassword(req.body.password);
+        if(hashpass) {
+
+       
+        req.body.password = hashpass
+        console.log(hashpass);
+
+
         const result = await creatUser(req.body);
 
     if(result?._id) {
@@ -27,6 +37,7 @@ Router.post("/", createAdminUserValidation, async (req, res) => {
             "New user has been created successfully!we have send a email conformation to your email,please check and follow the activate your account",
         });
     }
+}
     res.json({
         state:'error',
         message:"Unable to created new user successfully",
